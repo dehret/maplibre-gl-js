@@ -13,11 +13,14 @@ export type RasterUniformsType = {
     'u_opacity': Uniform1f;
     'u_image0': Uniform1i;
     'u_image1': Uniform1i;
+    'u_color_ramp': Uniform1i;
     'u_brightness_low': Uniform1f;
     'u_brightness_high': Uniform1f;
     'u_saturation_factor': Uniform1f;
     'u_contrast_factor': Uniform1f;
     'u_spin_weights': Uniform3f;
+    'u_color_channel': Uniform1f;
+    'u_is_using_color_ramp': Uniform1f;
     'u_coords_top': Uniform4f;
     'u_coords_bottom': Uniform4f;
 };
@@ -30,11 +33,14 @@ const rasterUniforms = (context: Context, locations: UniformLocations): RasterUn
     'u_opacity': new Uniform1f(context, locations.u_opacity),
     'u_image0': new Uniform1i(context, locations.u_image0),
     'u_image1': new Uniform1i(context, locations.u_image1),
+    'u_color_ramp': new Uniform1i(context, locations.u_color_ramp),
     'u_brightness_low': new Uniform1f(context, locations.u_brightness_low),
     'u_brightness_high': new Uniform1f(context, locations.u_brightness_high),
     'u_saturation_factor': new Uniform1f(context, locations.u_saturation_factor),
     'u_contrast_factor': new Uniform1f(context, locations.u_contrast_factor),
     'u_spin_weights': new Uniform3f(context, locations.u_spin_weights),
+    'u_color_channel': new Uniform1f(context, locations.u_color_channel),
+    'u_is_using_color_ramp': new Uniform1f(context, locations.u_is_using_color_ramp),
     'u_coords_top': new Uniform4f(context, locations.u_coords_top),
     'u_coords_bottom': new Uniform4f(context, locations.u_coords_bottom)
 });
@@ -60,11 +66,14 @@ const rasterUniformValues = (
     'u_opacity': fade.opacity * layer.paint.get('raster-opacity'),
     'u_image0': 0,
     'u_image1': 1,
+    'u_color_ramp': 2,
     'u_brightness_low': layer.paint.get('raster-brightness-min'),
     'u_brightness_high': layer.paint.get('raster-brightness-max'),
     'u_saturation_factor': saturationFactor(layer.paint.get('raster-saturation')),
     'u_contrast_factor': contrastFactor(layer.paint.get('raster-contrast')),
     'u_spin_weights': spinWeights(layer.paint.get('raster-hue-rotate')),
+    'u_color_channel': layer.paint.get('raster-color-channel'),
+    'u_is_using_color_ramp': Number(layer.paint.get('raster-color-channel') ?? -1.0) > -1.0 ? 1.0 : 0.0,
     'u_coords_top': [cornerCoords[0].x, cornerCoords[0].y, cornerCoords[1].x, cornerCoords[1].y],
     'u_coords_bottom': [cornerCoords[3].x, cornerCoords[3].y, cornerCoords[2].x, cornerCoords[2].y]
 });

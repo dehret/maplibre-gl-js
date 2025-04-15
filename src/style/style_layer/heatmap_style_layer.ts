@@ -41,7 +41,7 @@ export class HeatmapStyleLayer extends StyleLayer {
     }
 
     _handleSpecialPaintPropertyUpdate(name: string) {
-        if (name === 'heatmap-color') {
+        if (name === 'heatmap-color' || name === 'raster-color-ramp') {
             this._updateColorRamp();
         }
     }

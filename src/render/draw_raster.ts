@@ -17,6 +17,8 @@ import type {OverscaledTileID} from '../source/tile_id';
 import type {IReadonlyTransform} from '../geo/transform_interface';
 import type {Tile} from '../source/tile';
 import type {Terrain} from './terrain';
+import {type Context} from '../gl/context';
+import {Texture} from './texture';
 
 const cornerCoords = [
     new Point(0, 0),
@@ -125,6 +127,10 @@ function drawTiles(
                 context.extTextureFilterAnisotropicMax);
         }
 
+        context.activeTexture.set(gl.TEXTURE2);
+        const colorRampTexture = getColorRampTexture(context, layer);
+        colorRampTexture.bind(gl.LINEAR, gl.CLAMP_TO_EDGE);
+
         const terrainData = painter.style.map.terrain && painter.style.map.terrain.getTerrainData(coord);
         const projectionData = transform.getProjectionData({overscaledTileID: coord, aligned: align, applyGlobeMatrix: !isRenderingToTexture, applyTerrainMatrix: true});
         const uniformValues = rasterUniformValues(parentTL || [0, 0], parentScaleBy || 1, fade, layer, corners);
@@ -181,4 +187,11 @@ function getFadeValues(tile: Tile, parentTile: Tile, sourceCache: SourceCache, l
             mix: 0
         };
     }
+}
+
+function getColorRampTexture(context: Context, layer: RasterStyleLayer): Texture {
+    if (!layer.colorRampTexture) {
+        layer.colorRampTexture = new Texture(context, layer.colorRamp, context.gl.RGBA);
+    }
+    return layer.colorRampTexture;
 }
